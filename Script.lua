@@ -1,85 +1,66 @@
-repeat task.wait() until game:GetService("Players").LocalPlayer
-repeat task.wait() until game:GetService("Players").LocalPlayer:FindFirstChild("PlayerGui")
-repeat task.wait() until game:GetService("Players").LocalPlayer.PlayerGui:FindFirstChild("Main")
-repeat task.wait() until (game.Players.LocalPlayer.Neutral == false) == true
-
-local pbag = ({...})[1]
-local __script__host = pbag[1]
-local __script__machine = pbag[2]
+local requests = (syn and syn.request) or (krnl and request) or (fluxus and fluxus.request) or (electron and http.request) or request or http.request
 local HttpService = game:GetService("HttpService")
-local Players = game:GetService("Players")
-local LocalPlayer = Players.LocalPlayer
-local MeleeRequestList = {
-    ["Death Step"] = "BuyDeathStep",
-    ["Sharkman Karate"] = "BuySharkmanKarate",
-    ["Electric Claw"] = "BuyElectricClaw",
-    ["Dragon Talon"] = "BuyDragonTalon",
-    ["Godhuman"] = "BuyGodhuman",
-    ["Super human"] = "BuySuperhuman"
-}
-function getLevel()
-    return LocalPlayer.Data.Level.Value
-end
-function getWorld() 
-	local placeId = game.PlaceId
-	if placeId == 2753915549 then
-		return 1
-	elseif placeId == 4442272183 then
-		return 2
-	elseif placeId == 7449423635 then
-		return 3
-	end
-end
-function getItem(itemName) 
-    for i,v in pairs(game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("getInventory")) do
-        if type(v) == "table" then
-            if v.Type == "Material" then
-                if v.Name == itemName then
-                    return true
-                end
-            end
+local url = "https://testdatabf.000webhostapp.com/saveData.php"
+
+function GetLogAllMeleeNew()
+    combat = 0
+    BuyDragonTalon = tonumber(game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("BuyDragonTalon",true))
+    if BuyDragonTalon then
+        if BuyDragonTalon == 1 then
+            combat += 1
         end
     end
-    return false
-end
-function getFruitMastery()
-    if game:GetService("Players").LocalPlayer.Data.DevilFruit.Value == '' then return 0 end
-    if LocalPlayer:FindFirstChild("Backpack") then 
-        for i,v in pairs(LocalPlayer:FindFirstChild("Backpack"):GetChildren()) do 
-            if v.ToolTip == "Blox Fruit" then 
-                if v:FindFirstChild("Level") then 
-                    return v.Level.Value
-                end
-            end
+    BuySuperhuman = tonumber(game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("BuySuperhuman",true))
+    if BuySuperhuman then
+        if BuySuperhuman == 1 then
+            combat += 1
         end
     end
-    repeat wait() until LocalPlayer.Character
-    if LocalPlayer.Character:FindFirstChildOfClass("Tool") then 
-        local Tool = LocalPlayer.Character:FindFirstChildOfClass("Tool")
-        if Tool.ToolTip == "Blox Fruit" then
-            if Tool:FindFirstChild("Level") then 
-                return Tool.Level.Value
-            end
+    BuySharkmanKarate = tonumber(game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("BuySharkmanKarate",true))
+    if BuySharkmanKarate then
+        if BuySharkmanKarate == 1 then
+            combat += 1
         end
     end
-    return 0
+    BuyDeathStep = tonumber(game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("BuyDeathStep",true))
+    if BuyDeathStep then
+        if BuyDeathStep == 1 then
+            combat += 1
+        end
+    end
+    BuyElectricClaw = tonumber(game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("BuyElectricClaw",true))
+    if BuyElectricClaw then
+        if BuyElectricClaw == 1 then
+            combat += 1
+        end
+    end
+    Log_Godhuman = tonumber(game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("BuyGodhuman",true))
+    if Log_Godhuman then
+        if Log_Godhuman == 1 then
+            combat += 1
+        end
+    end
+    return combat
 end
 
-function getFruitName()
-    return string.split(game:GetService("Players").LocalPlayer.Data.DevilFruit.Value,"-")[2] or "None"
-end
+local function sendDataToServer(data)
+    local jsonData = HttpService:JSONEncode(data)
+    local response = requests({
+        Url = url,
+        Method = "POST",
+        Headers = {
+            ["Content-Type"] = "application/json"
+        },
+        Body = jsonData
+    })
 
-function getAwakend()
-    local SkillAWakenedList = {}
-    local getAwakenedAbilitiesRequests = game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("getAwakenedAbilities")
-    if getAwakenedAbilitiesRequests then
-    for i, v in pairs(getAwakenedAbilitiesRequests) do
-        if v["Awakened"] then 
-                table.insert(SkillAWakenedList, i)
-            end
-        end
+    if response then
+        print("Response status code:", response.StatusCode)
+        print("Response body:", response.Body)
+		print(jsonData)
+    else
+        print("Error: No response received")
     end
-    return SkillAWakenedList;
 end
 
 function getMeele()
@@ -93,149 +74,371 @@ function getMeele()
     return MeleeName
 end
 
-function getSword()
-    local SwordList, RequestGetInvertory = {}, nil
-    RequestGetInvertory = game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("getInventory")
-    for i , v in pairs(RequestGetInvertory) do 
-        if v['Type'] == "Sword" then 
-            if v['Rarity'] >= 3 then
-                table.insert(SwordList, v['Name'])
+function getWorld() 
+	local placeId = game.PlaceId
+	if placeId == 2753915549 then
+		return 1
+	elseif placeId == 4442272183 then
+		return 2
+	elseif placeId == 7449423635 then
+		return 3
+	end
+end
+
+function getItem(itemName) 
+    for i,v in pairs(game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("getInventory")) do
+        if type(v) == "table" then
+            if v.Type == "Material" then
+                if v.Name == itemName then
+                    return "✔️"
+                end
             end
         end
     end
-    return SwordList
+    return "❌"
 end
 
-function GetFruitInU()
+function getFruitName()
+    return string.split(game:GetService("Players").LocalPlayer.Data.DevilFruit.Value,"-")[2] or "None"
+end
+
+local function GetLogNewAwake()
+    AwakeText = ''
+    pcall(function()
+        for i ,v in pairs(game.Players.LocalPlayer.Backpack:GetChildren()) do
+            if v:IsA("Tool") then
+                if v.ToolTip == "Blox Fruit" then
+                    if v:FindFirstChild("AwakenedMoves") then
+                        if v.AwakenedMoves:FindFirstChild("Z") then
+                            AwakeZ = true
+                        end
+                        if v.AwakenedMoves:FindFirstChild("X") then
+                            AwakeX = true
+                        end
+                        if v.AwakenedMoves:FindFirstChild("C") then
+                            AwakeC = true
+                        end
+                        if v.AwakenedMoves:FindFirstChild("V") then
+                            AwakeV = true
+                        end
+                        if v.AwakenedMoves:FindFirstChild("F") then
+                            AwakeF = true
+                        end
+                        if v.AwakenedMoves:FindFirstChild("TAP") then
+                            AwakeTAP = true
+                        end
+                        if v.Name == "Dough-Dough" then
+                            if AwakeZ == true and AwakeX == true and AwakeC == true and AwakeV == true and AwakeF == true and AwakeTAP == true then
+                                AwakeText = "[Full Awaked] "..string.split(game:GetService("Players").LocalPlayer.Data.DevilFruit.Value,"-")[2].." ["..game:GetService("Players").LocalPlayer.Backpack[game.Players.LocalPlayer.Data.DevilFruit.Value].Level.Value.."]"
+                            else
+                                AwakeText = string.split(game:GetService("Players").LocalPlayer.Data.DevilFruit.Value,"-")[2].." ["..game:GetService("Players").LocalPlayer.Backpack[game.Players.LocalPlayer.Data.DevilFruit.Value].Level.Value.."]"
+                            end
+                        else
+                            if (AwakeZ == true and AwakeX == true and AwakeC == true and AwakeV == true and AwakeF == true) or (AwakeZ == true and AwakeX == true and AwakeC == true and AwakeV == true) then
+                                AwakeText = "[Full Awaked] "..string.split(game:GetService("Players").LocalPlayer.Data.DevilFruit.Value,"-")[2].." ["..game:GetService("Players").LocalPlayer.Backpack[game.Players.LocalPlayer.Data.DevilFruit.Value].Level.Value.."]"
+                            else
+                                AwakeText = string.split(game:GetService("Players").LocalPlayer.Data.DevilFruit.Value,"-")[2].." ["..game:GetService("Players").LocalPlayer.Backpack[game.Players.LocalPlayer.Data.DevilFruit.Value].Level.Value.."]"
+                            end
+                        end
+                    else
+                        AwakeText = string.split(game:GetService("Players").LocalPlayer.Data.DevilFruit.Value,"-")[2].." ["..game:GetService("Players").LocalPlayer.Backpack[game.Players.LocalPlayer.Data.DevilFruit.Value].Level.Value.."]"
+                    end
+                elseif game:GetService("Players").LocalPlayer.Data.DevilFruit.Value == '' then
+                    AwakeText = "None"
+                end
+            end
+        end
+        for i ,v in pairs(game:GetService("Workspace").Characters[game.Players.LocalPlayer.Name]:GetChildren()) do
+            if v:IsA("Tool") then
+                if v.ToolTip == "Blox Fruit" then
+                    if v:FindFirstChild("AwakenedMoves") then
+                        if v.AwakenedMoves:FindFirstChild("Z") then
+                            AwakeZ = true
+                        end
+                        if v.AwakenedMoves:FindFirstChild("X") then
+                            AwakeX = true
+                        end
+                        if v.AwakenedMoves:FindFirstChild("C") then
+                            AwakeC = true
+                        end
+                        if v.AwakenedMoves:FindFirstChild("V") then
+                            AwakeV = true
+                        end
+                        if v.AwakenedMoves:FindFirstChild("F") then
+                            AwakeF = true
+                        end
+                        if v.AwakenedMoves:FindFirstChild("TAP") then
+                            AwakeTAP = true
+                        end
+                        if v.Name == "Dough-Dough" then
+                            if AwakeZ == true and AwakeX == true and AwakeC == true and AwakeV == true and AwakeF == true and AwakeTAP == true then
+                                AwakeText = "F "..string.split(game:GetService("Players").LocalPlayer.Data.DevilFruit.Value,"-")[2].." ["..game:GetService("Players").LocalPlayer.Backpack[game.Players.LocalPlayer.Data.DevilFruit.Value].Level.Value.."]"
+                            else
+                                AwakeText = string.split(game:GetService("Players").LocalPlayer.Data.DevilFruit.Value,"-")[2].." ["..game:GetService("Players").LocalPlayer.Backpack[game.Players.LocalPlayer.Data.DevilFruit.Value].Level.Value.."]"
+                            end
+                        else
+                            if (AwakeZ == true and AwakeX == true and AwakeC == true and AwakeV == true and AwakeF == true) or (AwakeZ == true and AwakeX == true and AwakeC == true and AwakeV == true) then
+                                AwakeText = "F "..string.split(game:GetService("Players").LocalPlayer.Data.DevilFruit.Value,"-")[2].." ["..game:GetService("Players").LocalPlayer.Backpack[game.Players.LocalPlayer.Data.DevilFruit.Value].Level.Value.."]"
+                            else
+                                AwakeText = string.split(game:GetService("Players").LocalPlayer.Data.DevilFruit.Value,"-")[2].." ["..game:GetService("Players").LocalPlayer.Backpack[game.Players.LocalPlayer.Data.DevilFruit.Value].Level.Value.."]"
+                            end
+                        end
+                    else
+                        AwakeText = string.split(game:GetService("Players").LocalPlayer.Data.DevilFruit.Value,"-")[2].." ["..game:GetService("Players").LocalPlayer.Backpack[game.Players.LocalPlayer.Data.DevilFruit.Value].Level.Value.."]"
+                    end
+                end
+            end
+        end
+    end)
+    return AwakeText
+end
+
+function GetLogFruitInventory()
     local ReturnText = {}
     for i,v in pairs(game:GetService("ReplicatedStorage").Remotes["CommF_"]:InvokeServer("getInventoryFruits")) do
         if type(v) == "table" then
             if v ~= nil then
-                if v.Price >= 2300000  then
+                if v.Price >= 0 then
                     table.insert(ReturnText,string.split(v.Name,"-")[2])
                 end
             end
         end
     end
-    return ReturnText
-end
-function len(x)
-    local q = 0
-    for i, v in pairs(x) do
-        q = q + 1
+
+    if #ReturnText ~= 0 then
+        return table.concat(ReturnText,", ")
+    else
+        return "-"
     end
-    return q
-end
-function findItem(item) 
-    local RequestgetInventory;
-    RequestgetInventory = game:GetService("ReplicatedStorage").Remotes["CommF_"]:InvokeServer("getInventory")
-    for i, __ in pairs(RequestgetInventory) do
-        if __["Name"] == item then
-            return true
-        end
-    end
-    return false
-end
-function getType()
-    local ReturnText = {}
-    if findItem("Cursed Dual Katana") then 
-        table.insert(ReturnText, "CDK")
-    end
-    if findItem("Soul Guitar") then
-        table.insert(ReturnText, "SG")
-    end
-    local GodHuman = tonumber(game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("BuyGodhuman",true))
-    if GodHuman then
-            if GodHuman == 1 then
-                table.insert(ReturnText, "GOD")
-            end
-    end
-    if len(ReturnText) == 0 then
-        table.insert(ReturnText, "NOOB")
-    end
-    return table.concat(ReturnText, " ")
 end
 
-function getVK()
-	for i,v in pairs(game:GetService("ReplicatedStorage").Remotes["CommF_"]:InvokeServer("getInventoryWeapons")) do -- เช็คในกระเป๋า
-            for i1,v1 in pairs(v) do
-                if v1 == 'Valkyrie Helm' then
-                    return true
+function CheckRaceV()
+	ReturnText = ' [V1]'
+	if game.Players.LocalPlayer.Backpack:FindFirstChild("Awakening") or game.Players.LocalPlayer.Character:FindFirstChild("Awakening") then
+		ReturnText = ' [V4]'
+	elseif game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("Wenlocktoad","1") == -2 then
+		ReturnText = ' [V3]'
+	elseif game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("Alchemist","3") == -2 then
+		ReturnText = ' [2]'
+	end
+	return ReturnText
+end
+
+function CheckTier()
+	local Tier = game:GetService("Players").LocalPlayer.Data.Race:FindFirstChild("C")
+    if Tier then
+        print(Tier.Value)
+        CheckTier_Text = "T" ..Tier.Value
+    else
+        print(false)
+        CheckTier_Text = "-"
+    end
+
+    return CheckTier_Text
+end
+
+function AbbreviateNumber(number)
+    local suffixes = {"", "K", "M", "B", "T"}
+    local suffixIndex = 1
+
+    while number >= 1000 and suffixIndex < #suffixes do
+        number = number / 1000
+        suffixIndex = suffixIndex + 1
+    end
+
+    -- เช็คว่าถ้าหลักทศนิยมของตัวเลขมากกว่า 0 ให้ใช้การจัดรูปแบบเพื่อแสดง 2 ตำแหน่งทศนิยม
+    if number % 1 ~= 0 then
+        return string.format("%.2f%s", number, suffixes[suffixIndex])
+    else
+        return number .. suffixes[suffixIndex]
+    end
+end
+
+
+
+function CheckLogFragment()
+    local FragmentValue = game:GetService("Players").LocalPlayer.Data.Fragments.Value
+    FragmentValue = AbbreviateNumber(FragmentValue)
+    return FragmentValue
+end
+
+function CheckLogBeli()
+    local BeliValue = game:GetService("Players").LocalPlayer.Data.Beli.Value
+    BeliValue = AbbreviateNumber(BeliValue)
+    return BeliValue
+end
+
+function CheckLogBounty()
+    local BountyValue = game:GetService("Players").LocalPlayer.leaderstats["Bounty/Honor"].Value
+    BountyValue = AbbreviateNumber(BountyValue)
+    return BountyValue
+end
+
+function CheckPull_Lever_NopChillz()
+    local args = {
+        [1] = "CheckTempleDoor"
+    }
+    local Pull_Lever_NopChillz = game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("CommF_"):InvokeServer(unpack(args))	
+
+
+    if Pull_Lever_NopChillz then
+        print("✔")
+        Pull_Lever_NopChillz_Text = '✔️'
+    else
+        print("❌")
+        Pull_Lever_NopChillz_Text = '❌'
+    end
+
+    return Pull_Lever_NopChillz_Text
+end
+
+function GetLogGOD()
+    if getgenv().SettingsLog.Show_Item_SettingsLog["Log_Godhuman"] == true then
+        Log_Godhuman = tonumber(game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("BuyGodhuman",true))
+        if Log_Godhuman then
+            if Log_Godhuman == 1 then
+                CombatText = 'GOD'
+            end
+        end
+    else
+        CombatText = ''
+    end
+    return CombatText
+end
+
+function CheckLogMirrorFractalNew()
+    if getgenv().SettingsLog.Show_Material_SettingsLog["Log_Mirror_Fractal"] == true then
+        MirrorFac_Text = ''
+        for i,v in pairs(game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("getInventory")) do
+            if type(v) == "table" then
+                if v.Type == "Material" then
+                    if v.Name == "Mirror Fractal" then
+                        MirrorFac_Text = "+MIRROR"
+                    end
                 end
             end
         end
-     if game:GetService("Players").LocalPlayer.Backpack:FindFirstChild('Valkyrie Helm') or game:GetService("Players").LocalPlayer.Character:FindFirstChild('Valkyrie Helm') then
-           return true
-        end
-    return false
+	else
+        MirrorFac_Text = ''
+    end
+    return MirrorFac_Text
 end
 
-function getEvoTier()
-    local CheckAlchemist = game.ReplicatedStorage.Remotes.CommF_:InvokeServer("Alchemist", "1")
-    if CheckAlchemist == -2 then
-        local CheckWenlocktoad = game.ReplicatedStorage.Remotes.CommF_:InvokeServer("Wenlocktoad", "1")
-        if CheckWenlocktoad == -2 then
-            if game.Players.LocalPlayer.Character:FindFirstChild("RaceTransformed") then
-                return 4
+function CheckLogVK()
+    if getgenv().SettingsLog.Show_Item_SettingsLog["Log_Valkyrie_Helm"] == true then
+        VK_Text = ''
+        for i,v in pairs(game:GetService("ReplicatedStorage").Remotes["CommF_"]:InvokeServer("getInventoryWeapons")) do -- เช็คในกระเป๋า
+            for i1,v1 in pairs(v) do
+                if v1 == 'Valkyrie Helm' then
+                    VK_Text = '+ADMIN'
+                end
             end
-            return 3
         end
-        return 2
+        if game:GetService("Players").LocalPlayer.Backpack:FindFirstChild('Valkyrie Helm') or game:GetService("Players").LocalPlayer.Character:FindFirstChild('Valkyrie Helm') then
+            VK_Text = '+ADMIN'
+        end
+    else
+        VK_Text = ''
     end
-    return 1
+    return VK_Text
 end
 
-
-function getAwakendTier()
-    local q, _ = pcall(function()
-        return tonumber(game:GetService("Players").LocalPlayer.Data.Race.C.Value)
-    end)
-    if q then return _ end 
-    return 0
-end
-
-function checkDoor()
-    return game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("CommF_"):InvokeServer("CheckTempleDoor")
-end
-
-function sendRequest()
-    local res = request({
-        Url = __script__host,
-        Method = "POST",
-        Headers = {
-            ["Content-Type"] = "application/json",
-        },
-        Body = HttpService:JSONEncode({
-            ["player"] = LocalPlayer.DisplayName,
-            ["type"] = getType(),
-            ["level"] = getLevel(),
-            ["world"] = getWorld(),
-            ["mirror"] = getItem("Mirror Fractal"),
-            ["valk"] = getVK(),
-            ["fruitMas"] = getFruitMastery(),
-            ["fruit"] = getFruitName() or "None",
-            ["awaken"] = getAwakend(),
-            ["melee"] = getMeele(),
-            ["beli"] = LocalPlayer.Data.Beli.Value,
-            ["fragment"] = LocalPlayer.Data.Fragments.Value,
-            ["machine"] = __script__machine,
-            ["inventory"] = getSword(),
-            ["fruitInv"] = GetFruitInU(),
-            ["race"] = game:GetService("Players").LocalPlayer.Data.Race.Value,
-            ["raceV"] = getEvoTier(),
-            ["tier"] = getAwakendTier(),
-            ["unlockDoor"] = checkDoor()
-        })
-    })
-   warn(res.Body)
-end
-
-task.spawn(function()
-    while true do
-        local x, p = pcall(function()
-            sendRequest()
-        end)
-        if not x then warn(p) end
-        task.wait(60)
+function CheckLogCDKNew()
+    if getgenv().SettingsLog.Show_Item_SettingsLog["Log_Cursed_Dual_Katana"] == true then
+        CDK_Text = ''
+        for i,v in pairs(game:GetService("ReplicatedStorage").Remotes["CommF_"]:InvokeServer("getInventoryWeapons")) do -- เช็คในกระเป๋า
+            for i1,v1 in pairs(v) do
+                if v1 == 'Cursed Dual Katana' then
+                    CDK_Text = '+CDK'
+                end
+            end
+        end
+        if game:GetService("Players").LocalPlayer.Backpack:FindFirstChild('Cursed Dual Katana') or game:GetService("Players").LocalPlayer.Character:FindFirstChild('Cursed Dual Katana') then
+            CDK_Text = '+CDK'
+        end
+    else
+        CDK_Text = ''
     end
-end)
+    return CDK_Text
+end
+
+function CheckLogSA()
+    if getgenv().SettingsLog.Show_Item_SettingsLog["Log_Shark_Anchor"] == true then
+        Log_SA_Text = ''
+        for i,v in pairs(game:GetService("ReplicatedStorage").Remotes["CommF_"]:InvokeServer("getInventoryWeapons")) do -- เช็คในกระเป๋า
+            for i1,v1 in pairs(v) do
+                if v1 == 'Shark Anchor' then
+                    Log_SA_Text = '+SA'
+                end
+            end
+        end
+        if game:GetService("Players").LocalPlayer.Backpack:FindFirstChild('Shark Anchor') or game:GetService("Players").LocalPlayer.Character:FindFirstChild('Shark Anchor') then
+            Log_SA_Text = '+SA'
+        end
+    else
+        Log_SA_Text = ''
+    end
+    return Log_SA_Text
+end
+
+function CheckLogSGTNew()
+    if getgenv().SettingsLog.Show_Item_SettingsLog["Log_Soul_Guitar"] == true then
+        SGT_Text = ''
+        for i,v in pairs(game:GetService("ReplicatedStorage").Remotes["CommF_"]:InvokeServer("getInventoryWeapons")) do -- เช็คในกระเป๋า
+            for i1,v1 in pairs(v) do
+                if v1 == 'Soul Guitar' then
+                    SGT_Text = '+SG'
+                end
+                if game:GetService("Players").LocalPlayer.Backpack:FindFirstChild('Soul Guitar') or game:GetService("Players").LocalPlayer.Character:FindFirstChild('Soul Guitar') then
+                    SGT_Text = '+SG'
+                end
+            end
+        end
+    else
+        SGT_Text = ''
+    end
+    return SGT_Text
+end
+
+function CheckLevelLog()
+    RaceText = ''
+    if game:GetService("Players").LocalPlayer.Data.Level.Value < 2550 then
+    else
+        RaceText = 'Lv.MAX | '
+    end
+    return RaceText
+end
+
+function getSword()
+    local SwordList, RequestGetInvertory = {}, nil
+    RequestGetInvertory = game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("getInventory")
+    for i , v in pairs(RequestGetInvertory) do 
+        if v['Type'] == "Sword" then 
+            table.insert(SwordList, v['Name'])
+        end
+    end
+    return SwordList
+end
+
+
+
+local dataToSend = {
+    player = game.Players.LocalPlayer.Name,
+    level = game.Players.LocalPlayer.Data.Level.Value,
+	money =  CheckLogBeli(),
+	world = getWorld(),
+	mirror = getItem("Mirror Fractal"),
+	valk = getItem("Valkyrie Helm"),
+    fruit_awaken = GetLogNewAwake(),
+    fruit_inventory = GetLogFruitInventory(),
+    race = game:GetService("Players").LocalPlayer.Data.Race.Value .. CheckRaceV(),
+    tier = CheckTier(),
+    melee = GetLogAllMeleeNew(),
+    fragment = CheckLogFragment(),
+    bounty = CheckLogBounty(),
+    lever = CheckPull_Lever_NopChillz(),
+    type = CheckLevelLog() .. GetLogGOD() .. CheckLogMirrorFractalNew() .. CheckLogVK() .. CheckLogCDKNew() .. CheckLogSA() .. CheckLogSGTNew(),
+    name = _G.PC,
+}
+
+sendDataToServer(dataToSend)
