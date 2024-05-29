@@ -20,7 +20,7 @@ if ($conn->connect_error) {
 // ตรวจสอบว่ามีข้อมูล JSON ที่ถูกต้องถูกส่งมาหรือไม่
 if ($data !== null) {
     // ตรวจสอบว่ามีข้อมูลในอาร์เรย์หรือไม่ก่อนเข้าถึง
-    if (isset($data["player"]) && isset($data["level"]) && isset($data["money"]) && isset($data["world"]) && isset($data["mirror"]) && isset($data["valk"]) && isset($data["fruit_awaken"]) && isset($data["fruit_inventory"]) && isset($data["race"]) && isset($data["tier"]) && isset($data["melee"]) && isset($data["fragment"]) && isset($data["bounty"]) && isset($data["lever"]) && isset($data["type"]) && isset($data["name"])) {
+    if (isset($data["player"]) && isset($data["level"]) && isset($data["money"]) && isset($data["world"]) && isset($data["mirror"]) && isset($data["valk"]) && isset($data["fruit_awaken"]) && isset($data["fruit_inventory"]) && isset($data["race"]) && isset($data["tier"]) && isset($data["melee"]) && isset($data["fragment"]) && isset($data["bounty"]) && isset($data["lever"]) && isset($data["type"]) && isset($data["name"]) && isset($data["sword"]) && isset($data["gun"]) && isset($data["darkfragment"])) {
         $player = $conn->real_escape_string($data["player"]);
         $level = $conn->real_escape_string($data["level"]);
         $money = $conn->real_escape_string($data["money"]);
@@ -37,6 +37,9 @@ if ($data !== null) {
         $lever = $conn->real_escape_string($data["lever"]);
         $type = $conn->real_escape_string($data["type"]);
         $name = $conn->real_escape_string($data["name"]);
+        $sword = $conn->real_escape_string($data["sword"]);
+        $gun = $conn->real_escape_string($data["gun"]);
+        $darkfragment = $conn->real_escape_string($data["darkfragment"]);
 
         // ตรวจสอบว่ามีข้อมูลของผู้เล่นอยู่ในฐานข้อมูลหรือไม่
         $checkPlayerQuery = "SELECT * FROM user_data WHERE username = '$player'";
@@ -44,7 +47,7 @@ if ($data !== null) {
 
         if ($checkPlayerResult->num_rows > 0) {
             // ถ้ามีข้อมูลของผู้เล่นอยู่ในฐานข้อมูลแล้ว ให้ทำการอัปเดต level และ money
-            $updateQuery = "UPDATE user_data SET level = '$level', money = '$money', world = '$world', mirror = '$mirror', valk = '$valk', fruit_awaken = '$fruit_awaken', fruit_inventory = '$fruit_inventory', race = '$race', tier = '$tier', melee = '$melee', fragment = '$fragment', bounty = '$bounty', lever = '$lever', type = '$type', name = '$name' WHERE username = '$player'";
+            $updateQuery = "UPDATE user_data SET level = '$level', money = '$money', world = '$world', mirror = '$mirror', valk = '$valk', fruit_awaken = '$fruit_awaken', fruit_inventory = '$fruit_inventory', race = '$race', tier = '$tier', melee = '$melee', fragment = '$fragment', bounty = '$bounty', lever = '$lever', type = '$type', name = '$name', sword = '$sword', gun = '$gun', darkfragment = '$darkfragment' WHERE username = '$player'";
             if ($conn->query($updateQuery) === TRUE) {
                 echo "Data updated successfully";
             } else {
@@ -52,7 +55,7 @@ if ($data !== null) {
             }
         } else {
             // ถ้ายังไม่มีข้อมูลของผู้เล่นในฐานข้อมูล ให้ทำการเพิ่มข้อมูลใหม่
-            $insertQuery = "INSERT INTO user_data (username, level, money, world, mirror, valk, fruit_awaken, fruit_inventory, race, tier, melee, fragment, bounty, lever, type, name) VALUES ('$player', '$level', '$money', '$world', '$mirror', '$valk', '$fruit_awaken', '$fruit_inventory', '$race', '$tier', '$melee', '$fragment', '$bounty', '$lever', '$type', '$name')";
+            $insertQuery = "INSERT INTO user_data (username, level, money, world, mirror, valk, fruit_awaken, fruit_inventory, race, tier, melee, fragment, bounty, lever, type, name, sword, gun, darkfragment) VALUES ('$player', '$level', '$money', '$world', '$mirror', '$valk', '$fruit_awaken', '$fruit_inventory', '$race', '$tier', '$melee', '$fragment', '$bounty', '$lever', '$type', '$name', '$sword', '$gun', '$darkfragment')";
             if ($conn->query($insertQuery) === TRUE) {
                 echo "New record created successfully";
             } else {
