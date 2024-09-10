@@ -5,9 +5,9 @@ $data = json_decode($jsonData, true);
 
 // เชื่อมต่อกับฐานข้อมูล SQL
 $servername = "localhost";
-$username = "id21941414_nopchillz";
-$password = "@Nongnop001";
-$dbname = "id21941414_bf_data";
+$username = "root";
+$password = "nongnop001";
+$dbname = "dashboard";
 
 // สร้างการเชื่อมต่อ
 $conn = new mysqli($servername, $username, $password, $dbname);
