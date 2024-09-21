@@ -22,9 +22,13 @@ local function sendDataCosToServer(data)
     end
 end
 
-local dataCosToSend = {
-    player = game.Players.LocalPlayer.Name,
-    mushroom = game:GetService("Players").LocalPlayer.PlayerGui.Data.Coins.Value,
-}
+while true do
+    local dataCosToSend = {
+        player = game.Players.LocalPlayer.Name,
+        mushroom = game:GetService("Players").LocalPlayer.PlayerGui.Data.Coins.Value,
+    }
 
-sendDataCosToServer(dataCosToSend)
+    sendDataCosToServer(dataCosToSend)
+    
+    wait(60) -- รอ 1 นาที
+end
