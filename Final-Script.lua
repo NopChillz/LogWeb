@@ -14,4 +14,4 @@ getgenv().SettingsLog = {
 }
 _G.PC = "PC_NAME"
 _G.Key = "Key_Script"
-loadstring(game:HttpGet("https://raw.githubusercontent.com/NopChillz/LogWeb/main/Script.lua"))()
+loadstring(game:HttpGet("https://raw.githubusercontent.com/NopChillz/LogWeb/refs/heads/main/Script.lua"))()
