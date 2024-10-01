@@ -486,27 +486,30 @@ end
 
 local DarkFragmentCount = DarkFragment()
 
-local dataToSend = {
-    player = game.Players.LocalPlayer.Name,
-    level = game.Players.LocalPlayer.Data.Level.Value,
-    money =  CheckLogBeli(),
-    world = getWorld(),
-    mirror = getItem("Mirror Fractal"),
-    valk = getVK(),
-    fruit_awaken = GetLogNewAwake(),
-    fruit_inventory = GetLogFruitInventory(),
-    race = game:GetService("Players").LocalPlayer.Data.Race.Value .. CheckRaceV(),
-    tier = CheckTier(),
-    melee = GetLogAllMeleeNew(),
-    fragment = CheckLogFragment(),
-    bounty = CheckLogBounty(),
-    lever = CheckPull_Lever_NopChillz(),
-    type = CheckLevelLog() .. GetMeleeType() .. CheckLogMirrorFractalNew() .. CheckLogVK() .. CheckLogCDKNew() .. CheckLogSA() .. CheckLogSGTNew(),
-    name = _G.PC,
-    sword = SwordName,
-    gun = GunName,
-    darkfragment = DarkFragmentCount,
-    key_script = _G.Key,
-}
-
-sendDataToServer(dataToSend)
+while true do
+	local dataToSend = {
+	    player = game.Players.LocalPlayer.Name,
+	    level = game.Players.LocalPlayer.Data.Level.Value,
+	    money =  CheckLogBeli(),
+	    world = getWorld(),
+	    mirror = getItem("Mirror Fractal"),
+	    valk = getVK(),
+	    fruit_awaken = GetLogNewAwake(),
+	    fruit_inventory = GetLogFruitInventory(),
+	    race = game:GetService("Players").LocalPlayer.Data.Race.Value .. CheckRaceV(),
+	    tier = CheckTier(),
+	    melee = GetLogAllMeleeNew(),
+	    fragment = CheckLogFragment(),
+	    bounty = CheckLogBounty(),
+	    lever = CheckPull_Lever_NopChillz(),
+	    type = CheckLevelLog() .. GetMeleeType() .. CheckLogMirrorFractalNew() .. CheckLogVK() .. CheckLogCDKNew() .. CheckLogSA() .. CheckLogSGTNew(),
+	    name = _G.PC,
+	    sword = SwordName,
+	    gun = GunName,
+	    darkfragment = DarkFragmentCount,
+	    key_script = _G.Key,
+	}
+	
+	sendDataToServer(dataToSend)
+wait(60) -- รอ 1 นาที
+end
