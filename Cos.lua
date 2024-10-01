@@ -26,7 +26,7 @@ while true do
     local dataCosToSend = {
         player = game.Players.LocalPlayer.Name,
         mushroom = game:GetService("Players").LocalPlayer.PlayerGui.Data.Coins.Value,
-        pc_name = _G.PC
+        pc_name = _G.PC,
     }
 
     sendDataCosToServer(dataCosToSend)
