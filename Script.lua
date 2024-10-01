@@ -1,18 +1,3 @@
-getgenv().SettingsLog = {
-    Show_Item_SettingsLog = {
-    Log_Godhuman = true,  -- true or false
-    Log_SanguineArt = true,
-    Log_Soul_Guitar = true,  -- true or false
-    Log_Valkyrie_Helm = true,
-    Log_Cursed_Dual_Katana = true,
-    Log_Shark_Anchor = true,
-
-    },
-    Show_Material_SettingsLog = {
-        Log_Mirror_Fractal = true,
-    },
-}
-
 local requests = (syn and syn.request) or (krnl and request) or (fluxus and fluxus.request) or (electron and http.request) or request or http.request
 local HttpService = game:GetService("HttpService")
 local url = "https://bloxtracker.xyz/api/saveData.php"
