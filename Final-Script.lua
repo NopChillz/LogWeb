@@ -1,3 +1,4 @@
+-- Setting Script
 getgenv().SettingsLog = {
     Show_Item_SettingsLog = {
     Log_Godhuman = true,  -- true or false
@@ -12,6 +13,7 @@ getgenv().SettingsLog = {
         Log_Mirror_Fractal = true,
     },
 }
-_G.PC = "PC_NAME"
-_G.Key = "Key_Script"
+
+_G.PC = "PC_NAME" -- PC NAME
+_G.Key = "Key_Script" -- Key Script
 loadstring(game:HttpGet("https://raw.githubusercontent.com/NopChillz/LogWeb/refs/heads/main/Script.lua"))()
