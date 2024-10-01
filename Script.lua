@@ -521,7 +521,7 @@ local dataToSend = {
     sword = SwordName,
     gun = GunName,
     darkfragment = DarkFragmentCount,
-    key = _G.Key,
+    key_script = _G.Key,
 }
 
 sendDataToServer(dataToSend)
