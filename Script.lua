@@ -493,30 +493,37 @@ local DarkFragmentCount = DarkFragment()
 
 task.spawn(function()
     while true do
-        local dataToSend = {
-            player = game.Players.LocalPlayer.Name,
-            level = game.Players.LocalPlayer.Data.Level.Value,
-            money =  CheckLogBeli(),
-            world = getWorld(),
-            mirror = getItem("Mirror Fractal"),
-            valk = getVK(),
-            fruit_awaken = GetLogNewAwake(),
-            fruit_inventory = GetLogFruitInventory(),
-            race = game:GetService("Players").LocalPlayer.Data.Race.Value .. CheckRaceV(),
-            tier = CheckTier(),
-            melee = GetLogAllMeleeNew(),
-            fragment = CheckLogFragment(),
-            bounty = CheckLogBounty(),
-            lever = CheckPull_Lever_NopChillz(),
-            type = CheckLevelLog() .. GetMeleeType() .. CheckLogMirrorFractalNew() .. CheckLogVK() .. CheckLogCDKNew() .. CheckLogSA() .. CheckLogSGTNew(),
-            name = _G.PC,
-            sword = SwordName,
-            gun = GunName,
-            darkfragment = DarkFragmentCount,
-            key_script = _G.Key,
-        }
-        
-        sendDataToServer(dataToSend)
-    task.wait(30) -- รอ 1 นาที
+        local success, err = pcall(function()
+            local dataToSend = {
+                player = game.Players.LocalPlayer.Name,
+                level = game.Players.LocalPlayer.Data.Level.Value,
+                money = CheckLogBeli(),
+                world = getWorld(),
+                mirror = getItem("Mirror Fractal"),
+                valk = getVK(),
+                fruit_awaken = GetLogNewAwake(),
+                fruit_inventory = GetLogFruitInventory(),
+                race = game:GetService("Players").LocalPlayer.Data.Race.Value .. CheckRaceV(),
+                tier = CheckTier(),
+                melee = GetLogAllMeleeNew(),
+                fragment = CheckLogFragment(),
+                bounty = CheckLogBounty(),
+                lever = CheckPull_Lever_NopChillz(),
+                type = CheckLevelLog() .. GetMeleeType() .. CheckLogMirrorFractalNew() .. CheckLogVK() .. CheckLogCDKNew() .. CheckLogSA() .. CheckLogSGTNew(),
+                name = _G.PC,
+                sword = SwordName,
+                gun = GunName,
+                darkfragment = DarkFragmentCount,
+                key_script = _G.Key,
+            }
+            sendDataToServer(dataToSend) -- ฟังก์ชันนี้อาจเป็นที่ที่เกิด error
+        end)
+
+        if not success then
+            warn("Error encountered: ", err) -- ถ้า error ก็ยังคงวนต่อไปและส่งข้อมูลในรอบถัดไป
+        end
+
+        task.wait(30) -- รอ 30 วินาที ก่อนส่งใหม่
     end
 end)
+
