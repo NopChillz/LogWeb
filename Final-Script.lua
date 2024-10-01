@@ -17,4 +17,4 @@ getgenv().SettingsLog = {
 
 _G.PC = "TESTAA" -- PC NAME
 _G.Key = "BloxTracker_zR5V9twKyfr8MriI1P2G" -- Key Script
-task.spawn(function() loadstring(game:HttpGet("https://raw.githubusercontent.com/NopChillz/LogWeb/refs/heads/main/Script.lua"))() end)
+loadstring(game:HttpGet("https://raw.githubusercontent.com/NopChillz/LogWeb/refs/heads/main/Script.lua"))()
