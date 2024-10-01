@@ -1,4 +1,8 @@
-wait(30)
+repeat task.wait() until game:GetService("Players").LocalPlayer
+repeat task.wait() until game:GetService("Players").LocalPlayer:FindFirstChild("PlayerGui")
+repeat task.wait() until game:GetService("Players").LocalPlayer.PlayerGui:FindFirstChild("Main")
+repeat task.wait() until (game.Players.LocalPlayer.Neutral == false) == true
+
 local requests = (syn and syn.request) or (krnl and request) or (fluxus and fluxus.request) or (electron and http.request) or request or http.request
 local HttpService = game:GetService("HttpService")
 local url = "https://bloxtracker.xyz/api/saveData.php"
@@ -487,30 +491,32 @@ end
 
 local DarkFragmentCount = DarkFragment()
 
-while true do
-	local dataToSend = {
-	    player = game.Players.LocalPlayer.Name,
-	    level = game.Players.LocalPlayer.Data.Level.Value,
-	    money =  CheckLogBeli(),
-	    world = getWorld(),
-	    mirror = getItem("Mirror Fractal"),
-	    valk = getVK(),
-	    fruit_awaken = GetLogNewAwake(),
-	    fruit_inventory = GetLogFruitInventory(),
-	    race = game:GetService("Players").LocalPlayer.Data.Race.Value .. CheckRaceV(),
-	    tier = CheckTier(),
-	    melee = GetLogAllMeleeNew(),
-	    fragment = CheckLogFragment(),
-	    bounty = CheckLogBounty(),
-	    lever = CheckPull_Lever_NopChillz(),
-	    type = CheckLevelLog() .. GetMeleeType() .. CheckLogMirrorFractalNew() .. CheckLogVK() .. CheckLogCDKNew() .. CheckLogSA() .. CheckLogSGTNew(),
-	    name = _G.PC,
-	    sword = SwordName,
-	    gun = GunName,
-	    darkfragment = DarkFragmentCount,
-	    key_script = _G.Key,
-	}
-	
-	sendDataToServer(dataToSend)
-wait(60) -- รอ 1 นาที
-end
+task.spawn(function()
+    while true do
+        local dataToSend = {
+            player = game.Players.LocalPlayer.Name,
+            level = game.Players.LocalPlayer.Data.Level.Value,
+            money =  CheckLogBeli(),
+            world = getWorld(),
+            mirror = getItem("Mirror Fractal"),
+            valk = getVK(),
+            fruit_awaken = GetLogNewAwake(),
+            fruit_inventory = GetLogFruitInventory(),
+            race = game:GetService("Players").LocalPlayer.Data.Race.Value .. CheckRaceV(),
+            tier = CheckTier(),
+            melee = GetLogAllMeleeNew(),
+            fragment = CheckLogFragment(),
+            bounty = CheckLogBounty(),
+            lever = CheckPull_Lever_NopChillz(),
+            type = CheckLevelLog() .. GetMeleeType() .. CheckLogMirrorFractalNew() .. CheckLogVK() .. CheckLogCDKNew() .. CheckLogSA() .. CheckLogSGTNew(),
+            name = _G.PC,
+            sword = SwordName,
+            gun = GunName,
+            darkfragment = DarkFragmentCount,
+            key_script = _G.Key,
+        }
+        
+        sendDataToServer(dataToSend)
+    task.wait(30) -- รอ 1 นาที
+    end
+end)
