@@ -1,3 +1,4 @@
+repeat task.wait() until game:IsLoaded()
 -- Setting Script
 getgenv().SettingsLog = {
     Show_Item_SettingsLog = {
@@ -14,6 +15,6 @@ getgenv().SettingsLog = {
     },
 }
 
-_G.PC = "PC_NAME" -- PC NAME
-_G.Key = "Key_Script" -- Key Script
-loadstring(game:HttpGet("https://raw.githubusercontent.com/NopChillz/LogWeb/refs/heads/main/Script.lua"))()
+_G.PC = "TESTAA" -- PC NAME
+_G.Key = "BloxTracker_zR5V9twKyfr8MriI1P2G" -- Key Script
+task.spawn(function() loadstring(game:HttpGet("https://raw.githubusercontent.com/NopChillz/LogWeb/refs/heads/main/Script.lua"))() end)
