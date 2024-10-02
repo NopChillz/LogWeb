@@ -523,7 +523,7 @@ task.spawn(function()
             warn("Error encountered: ", err) -- ถ้า error ก็ยังคงวนต่อไปและส่งข้อมูลในรอบถัดไป
         end
 
-        task.wait(30) -- รอ 30 วินาที ก่อนส่งใหม่
+        task.wait(60) -- รอ 30 วินาที ก่อนส่งใหม่
     end
 end)
 
