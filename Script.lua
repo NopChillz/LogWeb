@@ -331,15 +331,15 @@ end
 function GetMeleeType()
     local CombatText = '' -- กำหนดค่าเริ่มต้นให้กับ CombatText
 
-    if getgenv().SettingsLog.Show_Item_SettingsLog["Log_SanguineArt"] == true then
-        local Log_SanguineArt = tonumber(game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("BuySanguineArt",true))
-        if Log_SanguineArt and Log_SanguineArt == 1 then
-            CombatText = 'SGA' -- ถ้า Log_SanguineArt เป็นจริง ให้แสดง SGA ก่อน
-        end
-    elseif getgenv().SettingsLog.Show_Item_SettingsLog["Log_Godhuman"] == true then
+    if getgenv().SettingsLog.Show_Item_SettingsLog["Log_Godhuman"] == true then
         local Log_Godhuman = tonumber(game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("BuyGodhuman",true))
         if Log_Godhuman and Log_Godhuman == 1 then
-            CombatText = 'GOD' -- ถ้า Log_SanguineArt ไม่เป็นจริง แต่ Log_Godhuman เป็นจริง ให้แสดง GOD
+            CombatText = 'GOD'
+        end
+    elseif getgenv().SettingsLog.Show_Item_SettingsLog["Log_SanguineArt"] == true then
+        local Log_SanguineArt = tonumber(game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("BuySanguineArt",true))
+        if Log_SanguineArt and Log_SanguineArt == 1 then
+            CombatText = 'SGA'
         end
     end
 
