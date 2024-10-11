@@ -346,9 +346,6 @@ function GetMeleeType()
     return CombatText -- ส่งค่า CombatText กลับ
 end
 
-    return CombatText -- ส่งค่า CombatText กลับ
-end
-
 
 function CheckLogMirrorFractalNew()
     if getgenv().SettingsLog.Show_Material_SettingsLog["Log_Mirror_Fractal"] == true then
