@@ -345,7 +345,6 @@ local combat = GetLogAllMeleeNew()
 local combatType = GetMeleeType(combat)
 
 
-
 function CheckLogMirrorFractalNew()
     if getgenv().SettingsLog.Show_Material_SettingsLog["Log_Mirror_Fractal"] == true then
         MirrorFac_Text = ''
@@ -490,7 +489,7 @@ end
 
 local DarkFragmentCount = DarkFragment()
 
-
+task.spawn(function()
     while true do
         local success, err = pcall(function()
             local dataToSend = {
@@ -525,4 +524,3 @@ local DarkFragmentCount = DarkFragment()
         task.wait(60) -- รอ 30 วินาที ก่อนส่งใหม่
     end
 end)
-
