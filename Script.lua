@@ -512,7 +512,7 @@ task.spawn(function()
                 fragment = CheckLogFragment(),
                 bounty = CheckLogBounty(),
                 lever = CheckPull_Lever_NopChillz(),
-                type = CheckLevelLog() .. combatType .. CheckLogMirrorFractalNew() .. CheckLogVK() .. CheckLogCDKNew() .. CheckLogSA() .. CheckLogSGTNew(),
+                type = CheckLevelLog() .. GetMeleeType() .. CheckLogMirrorFractalNew() .. CheckLogVK() .. CheckLogCDKNew() .. CheckLogSA() .. CheckLogSGTNew(),
                 name = _G.PC,
                 sword = SwordName,
                 gun = GunName,
