@@ -328,23 +328,21 @@ end
 --     return CombatText
 -- end
 -- New Melee
-function GetMeleeType()
+function GetMeleeType(combat)
     local CombatText = '' -- กำหนดค่าเริ่มต้นให้กับ CombatText
 
-    if getgenv().SettingsLog.Show_Item_SettingsLog["Log_SanguineArt"] == true then
-        local Log_SanguineArt = tonumber(game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("BuySanguineArt",true))
-        if Log_SanguineArt and Log_SanguineArt == 1 then
-            CombatText = 'SGA'
-        end
-	elseif getgenv().SettingsLog.Show_Item_SettingsLog["Log_Godhuman"] == true then
-        local Log_Godhuman = tonumber(game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("BuyGodhuman",true))
-        if Log_Godhuman and Log_Godhuman == 1 then
-            CombatText = 'GOD'
-        end
+    if getgenv().SettingsLog.Show_Item_SettingsLog["Log_SanguineArt"] == true and combat == 7 then
+        CombatText = 'SGA'
+    elseif getgenv().SettingsLog.Show_Item_SettingsLog["Log_Godhuman"] == true and combat == 6 then
+        CombatText = 'GOD'
     end
 
     return CombatText -- ส่งค่า CombatText กลับ
 end
+
+
+local combat = GetLogAllMeleeNew()
+local combatType = GetMeleeType(combat)
 
 
 
@@ -492,7 +490,7 @@ end
 
 local DarkFragmentCount = DarkFragment()
 
-task.spawn(function()
+
     while true do
         local success, err = pcall(function()
             local dataToSend = {
@@ -510,7 +508,7 @@ task.spawn(function()
                 fragment = CheckLogFragment(),
                 bounty = CheckLogBounty(),
                 lever = CheckPull_Lever_NopChillz(),
-                type = CheckLevelLog() .. GetMeleeType() .. CheckLogMirrorFractalNew() .. CheckLogVK() .. CheckLogCDKNew() .. CheckLogSA() .. CheckLogSGTNew(),
+                type = CheckLevelLog() .. combatType .. CheckLogMirrorFractalNew() .. CheckLogVK() .. CheckLogCDKNew() .. CheckLogSA() .. CheckLogSGTNew(),
                 name = _G.PC,
                 sword = SwordName,
                 gun = GunName,
