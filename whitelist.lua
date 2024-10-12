@@ -9,9 +9,9 @@ local Server = requests({
 
 if Server == "WHITELIST!" then
     print("SCRIPT")
-elseif Server == "Invalid HWID!" then  -- แก้ไขการสะกด
+elseif Server == "Invalid HWID!" then
     game.Players.LocalPlayer:kick("Invalid HWID")
-elseif Server == "Invalid Key" then  -- แก้ไขการสะกด
+elseif Server == "Invalid Key" then
     game.Players.LocalPlayer:kick("Invalid Key")
 else
     game.Players.LocalPlayer:kick("Invalid Key")
