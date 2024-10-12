@@ -1,9 +1,9 @@
-_G.Key = "BloxTracker_S5NriEu39HQBezE8DrjU" 
-_G.HWID = game:GetService("RbxAnalyticsService"):GetClientId()  -- แก้ไขให้ไม่ใช้ setclipboard
+_G.Key = "BloxTracker_zR5V9twKyfr8MriI1P2G" 
+_G.HWID = game:GetService("RbxAnalyticsService"):GetClientId()
 
 local requests = (syn and syn.request) or (krnl and request) or (fluxus and fluxus.request) or (electron and http.request) or request or http.request
 local Server = requests({
-    Url = "https://bloxtracker.xyz/api/whitelist.php?Key=" .. _G.Key .. "&HWID=" .. _G.HWID,  -- แก้ไขเป็น _G.HWID
+    Url = "https://bloxtracker.xyz/api/whitelist.php?Key=" .. _G.Key .. "&HWID=" .. _G.HWID,
     Method = "GET"
 }).Body
 
