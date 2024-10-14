@@ -24,20 +24,22 @@ local function sendDataCosToServer(data)
     end
 end
 
-while true do
-    local success, errorMsg = pcall(function()
-        local dataCosToSend = {
-            player = game.Players.LocalPlayer.Name,
-            mushroom = game:GetService("Players").LocalPlayer.PlayerGui.Data.Coins.Value,
-            pc_name = _G.PC,
-        }
-
-        sendDataCosToServer(dataCosToSend)
-    end)
-
-    if not success then
-        print("Error during loop execution:", errorMsg)
+task.spawn(function()
+    while true do
+        local success, errorMsg = pcall(function()
+            local dataCosToSend = {
+                player = game.Players.LocalPlayer.Name,
+                mushroom = game:GetService("Players").LocalPlayer.PlayerGui.Data.Coins.Value,
+                pc_name = _G.PC,
+            }
+    
+            sendDataCosToServer(dataCosToSend)
+        end)
+    
+        if not success then
+            print("Error during loop execution:", errorMsg)
+        end
+    
+        task.wait(60) -- รอ 30 วินาที ก่อนส่งใหม่
     end
-
-    wait(60) -- รอ 1 นาที
-end
+end)
