@@ -1,3 +1,5 @@
+task.spawn(function()
+repeat task.wait() until game:IsLoaded()
 local requests = (syn and syn.request) or (krnl and request) or (fluxus and fluxus.request) or (electron and http.request) or request or http.request
 local HttpService = game:GetService("HttpService")
 local url = "https://bloxtracker.xyz/api/saveCos.php"
@@ -42,5 +44,6 @@ task.spawn(function()
     
         task.wait(60) -- รอ 30 วินาที ก่อนส่งใหม่
     end
+end)
 end)
 end)
