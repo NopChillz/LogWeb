@@ -1,4 +1,6 @@
 
+task.spawn(function()
+    repeat task.wait() until game:IsLoaded()
     wait(15)
     local requests = (syn and syn.request) or (krnl and request) or (fluxus and fluxus.request) or (electron and http.request) or request or http.request
     local HttpService = game:GetService("HttpService")
@@ -35,7 +37,6 @@
                     money = game:GetService("Players").LocalPlayer.leaderstats["C$"].Value,
                     server = game.JobId,
                     pc_name = _G.PC,
-                    key_script = _G.Key,
                 }
         
                 sendDataFischToServer(dataFischToSend)
@@ -48,3 +49,4 @@
             task.wait(60) -- รอ 30 วินาที ก่อนส่งใหม่
         end
     end)
+end)
