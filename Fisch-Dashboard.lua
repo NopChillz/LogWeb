@@ -36,6 +36,7 @@ task.spawn(function()
                     money = game:GetService("Players").LocalPlayer.leaderstats["C$"].Value,
                     server = game.JobId,
                     pc_name = _G.PC,
+                    key_script = _G.Key,
                 }
         
                 sendDataFischToServer(dataFischToSend)
