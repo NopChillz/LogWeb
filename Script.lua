@@ -451,15 +451,17 @@ function CheckLevelLog()
 end
 
 function getSword()
-    local swordNames = {}
-    local RequestGetInventory = game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("getInventory")
-    for i, v in pairs(RequestGetInventory) do 
-        if v['Type'] == "Sword" and v['Rarity'] >= 3 then 
-            table.insert(swordNames, v['Name'])
+        local swordNames = {}
+        local RequestGetInventory = game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("getInventory")
+        for i, v in pairs(RequestGetInventory) do 
+            if v['Type'] == "Sword" and v['Rarity'] >= 3 then 
+                local masteryValue = v['Mastery'] or "N/A" -- ใช้ค่า Mastery ถ้ามีค่าอยู่
+                local swordWithMastery = v['Name'] .. " (" .. tostring(masteryValue) .. ")"  -- รวมชื่อดาบกับค่า Mastery
+                table.insert(swordNames, swordWithMastery)
+            end
         end
-    end
-    return table.concat(swordNames, ", ") -- รวมข้อมูลในตารางด้วยเครื่องหมาย ', '
-end 
+        return table.concat(swordNames, ", ")
+    end 
 
 local SwordName = getSword()
 
