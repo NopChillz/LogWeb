@@ -26,12 +26,24 @@ task.spawn(function()
         end
     end
     
+    function CurrentLevel()
+        local player = game:GetService("Players").LocalPlayer
+        local character = player.Character or player.CharacterAdded:Wait()
+        local head = character:WaitForChild("Head")
+        local overhead = head:WaitForChild("_overhead")
+        local frame = overhead:WaitForChild("Frame")
+        local levelFrame = frame:WaitForChild("Level_Frame")
+        local levelText = levelFrame:WaitForChild("Level").Text
+
+        return levelText
+    end
+    
     task.spawn(function()
         while true do
             local success, errorMsg = pcall(function()
                 local dataaaToSend = {
                     player = game.Players.LocalPlayer.Name,
-                    level = game:GetService("Players").LocalPlayer._stats.base_level.Value,
+                    level = CurrentLevel(),
                     gem = game:GetService("Players").LocalPlayer._stats.gem_amount.Value,
                     gold = game:GetService("Players").LocalPlayer._stats.gold_amount.Value,
                     pc_name = _G.PC,
