@@ -219,19 +219,16 @@ local function GetLogNewAwake()
 end
 
 function GetLogFruitInventory()
-    local ReturnText = {}
-    for i,v in pairs(game:GetService("ReplicatedStorage").Remotes["CommF_"]:InvokeServer("getInventoryFruits")) do
-        if type(v) == "table" then
-            if v ~= nil then
-                if v.Price >= 0 then
-                    table.insert(ReturnText,string.split(v.Name,"-")[2])
-                end
-            end
+    local FruitNames = {}
+    local RequestGetInventory = game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("getInventory")
+
+    for i, v in pairs(RequestGetInventory) do 
+        if v['Type'] == "Blox Fruit" then 
+            table.insert(FruitNames, v['Name'])
         end
     end
-
-    if #ReturnText ~= 0 then
-        return table.concat(ReturnText,", ")
+    if #FruitNames ~= 0 then
+        return table.concat(FruitNames, " , ")
     else
         return "-"
     end
@@ -460,7 +457,13 @@ function getSword()
                 table.insert(swordNames, swordWithMastery)
             end
         end
-        return table.concat(swordNames, ", ")
+        
+        if #swordNames ~= 0 then
+            return table.concat(swordNames, ", ")
+        else
+            return "-"
+        end
+
     end 
 
 local SwordName = getSword()
@@ -473,7 +476,12 @@ function getGun()
             table.insert(GunNames, v['Name'])
         end
     end
-    return table.concat(GunNames, ", ") -- รวมข้อมูลในตารางด้วยเครื่องหมาย ', '
+
+    if #GunNames ~= 0 then
+       return table.concat(GunNames, ", ") -- รวมข้อมูลในตารางด้วยเครื่องหมาย ', '
+    else
+        return "-"
+    end
 end 
 
 local GunName = getGun()
