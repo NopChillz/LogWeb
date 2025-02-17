@@ -43,7 +43,7 @@ task.spawn(function()
             local success, errorMsg = pcall(function()
                 local dataaaToSend = {
                     player = game.Players.LocalPlayer.Name,
-                    level = CurrentLevel(),
+                    level = tostring(game.Players.LocalPlayer.PlayerGui.spawn_units.Lives.Main.Desc.Level.Text),
                     gem = game:GetService("Players").LocalPlayer._stats.gem_amount.Value,
                     gold = game:GetService("Players").LocalPlayer._stats.gold_amount.Value,
                     pc_name = _G.PC,
