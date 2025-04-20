@@ -440,7 +440,7 @@ end
 
 function CheckLevelLog()
     RaceText = '-'
-    if game:GetService("Players").LocalPlayer.Data.Level.Value < 2550 then
+    if game:GetService("Players").LocalPlayer.Data.Level.Value < 2650 then
     else
         RaceText = 'Lv.MAX | '
     end
