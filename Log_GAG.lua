@@ -1,6 +1,3 @@
-_G.PC = "TEST" -- PC NAME
-_G.Key = "BloxTracker" -- Key Script
-
 task.spawn(function()
     repeat task.wait() until game:IsLoaded()
     wait(10)
