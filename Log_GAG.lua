@@ -27,6 +27,29 @@ task.spawn(function()
         end
     end
 
+    function AbbreviateNumber(number)
+        local suffixes = {"", "K", "M", "B", "T"}
+        local suffixIndex = 1
+
+        while number >= 1000 and suffixIndex < #suffixes do
+            number = number / 1000
+            suffixIndex = suffixIndex + 1
+        end
+
+        -- เช็คว่าถ้าหลักทศนิยมของตัวเลขมากกว่า 0 ให้ใช้การจัดรูปแบบเพื่อแสดง 2 ตำแหน่งทศนิยม
+        if number % 1 ~= 0 then
+            return string.format("%.2f%s", number, suffixes[suffixIndex])
+        else
+            return number .. suffixes[suffixIndex]
+        end
+    end 
+
+    function CheckLogCash()
+        local CashValue = game:GetService("Players").LocalPlayer.leaderstats.Sheckles.Value
+        CashValue = AbbreviateNumber(CashValue)
+        return CashValue
+    end
+
     function getBackpackItemList()
         local player = game:GetService("Players").LocalPlayer
         if not player then return "" end
@@ -51,7 +74,7 @@ task.spawn(function()
             local success, errorMsg = pcall(function()
                 local dataGAGToSend = {
                     player = game.Players.LocalPlayer.Name,
-                    cash = game:GetService("Players").LocalPlayer.leaderstats.Sheckles.Value,
+                    cash = CheckLogCash(),
                     inv = getBackpackItemList(),
                     pc_name = _G.PC,
                     key_script = _G.Key,
