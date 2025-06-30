@@ -33,6 +33,10 @@ task.spawn(function()
                 local dataCosToSend = {
                     player = game.Players.LocalPlayer.Name,
                     mushroom = game:GetService("Players").LocalPlayer.PlayerGui.Data.Coins.Value,
+                    Appearance = game:GetService("Players").LocalPlayer.PlayerGui.Data.Items.ChangeCreatureColorsToken.Value,
+                    Partial = game:GetService("Players").LocalPlayer.PlayerGui.Data.Items.PartialGrowToken.Value,
+                    MaxGrowth = game:GetService("Players").LocalPlayer.PlayerGui.Data.Items.FullGrowToken.Value,
+                    Revive = game:GetService("Players").LocalPlayer.PlayerGui.Data.Items.CreatureReviveToken.Value,
                     pc_name = _G.PC,
                 }
         
