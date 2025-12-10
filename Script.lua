@@ -86,14 +86,15 @@ function getMeele()
 end
 
 function getWorld() 
-    local placeId = game.PlaceId
-    if placeId == 2753915549 then
-        return 1
-    elseif placeId == 4442272183 then
-        return 2
-    elseif placeId == 7449423635 then
-        return 3
-    end
+	local placeId = game.PlaceId
+	if placeId == 2753915549  then
+		return 1
+	elseif placeId == 4442272183 or placeId == 79091703265657 then
+		return 2
+	elseif placeId == 7449423635 or placeId == 100117331123089 then
+		return 3
+	end
+	return 0
 end
 
 function getItem(itemName) 
@@ -273,8 +274,6 @@ function AbbreviateNumber(number)
     end
 end
 
-
-
 function CheckLogFragment()
     local FragmentValue = game:GetService("Players").LocalPlayer.Data.Fragments.Value
     FragmentValue = AbbreviateNumber(FragmentValue)
@@ -311,20 +310,6 @@ function CheckPull_Lever_NopChillz()
     return Pull_Lever_NopChillz_Text
 end
 
--- function GetLogGOD()
---     if getgenv().SettingsLog.Show_Item_SettingsLog["Log_Godhuman"] == true then
---         Log_Godhuman = tonumber(game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("BuyGodhuman",true))
---         if Log_Godhuman then
---             if Log_Godhuman == 1 then
---                 CombatText = 'GOD'
---             end
---         end
---     else
---         CombatText = ''
---     end
---     return CombatText
--- end
--- New Melee
 function GetMeleeType()
     local CombatText = '' -- กำหนดค่าเริ่มต้นให้กับ CombatText
 
@@ -438,9 +423,27 @@ function CheckLogSGTNew()
     return SGT_Text
 end
 
+function CheckLogLeviathanHeart()
+    if getgenv().SettingsLog.Show_Material_SettingsLog["Log_Leviathan_Heart"] == true then
+        Leviathan_Heart_Text = ''
+        for i,v in pairs(game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("getInventory")) do
+            if type(v) == "table" then
+                if v.Type == "Material" then
+                    if v.Name == "Leviathan Heart" then
+                        Leviathan_Heart_Text = "+HEART"
+                    end
+                end
+            end
+        end
+    else
+        Leviathan_Heart_Text = ''
+    end
+    return Leviathan_Heart_Text
+end
+
 function CheckLevelLog()
     RaceText = '-'
-    if game:GetService("Players").LocalPlayer.Data.Level.Value < 2650 then
+    if game:GetService("Players").LocalPlayer.Data.Level.Value < 2800 then
     else
         RaceText = 'Lv.MAX | '
     end
@@ -519,7 +522,7 @@ task.spawn(function()
                 fragment = CheckLogFragment(),
                 bounty = CheckLogBounty(),
                 lever = CheckPull_Lever_NopChillz(),
-                type = CheckLevelLog() .. GetMeleeType() .. CheckLogMirrorFractalNew() .. CheckLogVK() .. CheckLogCDKNew() .. CheckLogSA() .. CheckLogSGTNew(),
+                type = CheckLevelLog() .. GetMeleeType() .. CheckLogMirrorFractalNew() .. CheckLogVK() .. CheckLogCDKNew() .. CheckLogSA() .. CheckLogSGTNew() .. CheckLogLeviathanHeart(),
                 name = _G.PC,
                 sword = SwordName,
                 gun = GunName,
@@ -533,6 +536,6 @@ task.spawn(function()
             warn("Error encountered: ", err) -- ถ้า error ก็ยังคงวนต่อไปและส่งข้อมูลในรอบถัดไป
         end
 
-        task.wait(60) -- รอ 30 วินาที ก่อนส่งใหม่
+        task.wait(10) -- รอ 30 วินาที ก่อนส่งใหม่
     end
 end)
