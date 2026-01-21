@@ -280,6 +280,80 @@ function CheckLogFragment()
     return FragmentValue
 end
 
+function CheckLogFragmentTier()
+    local FragmentValue = game:GetService("Players").LocalPlayer.Data.Fragments.Value
+    
+    if FragmentValue >= 70000 then
+        return " | F:70K+"
+    elseif FragmentValue >= 50000 then
+        return " | F:50K+"
+    elseif FragmentValue >= 30000 then
+        return " | F:30K+"
+    else
+        return ""
+    end
+end
+
+function CheckLogMythicalFruits()
+    local MythicalFruits = {
+        "Tiger-Tiger",
+        "Dragon-Dragon",
+        "Venom-Venom",
+        "Soul-Soul",
+        "Dough-Dough",
+        "Spirit-Spirit",
+        "Control-Control",
+        "Mammoth-Mammoth",
+        "T-Rex-T-Rex",
+        "Kitsune-Kitsune",
+        "Yeti-Yeti",
+        "Gas-Gas",
+        "Portal-Portal",
+        "Gravity-Gravity",
+        "Shadow-Shadow",
+        "Spirit-Spirit"
+    }
+    
+    local ShowBoxFruits = {
+        "Dragon-Dragon",
+        "Control-Control",
+        "Kitsune-Kitsune",
+        "Dough-Dough",
+        "Tiger-Tiger",
+        "T-Rex-T-Rex"
+    }
+    
+    local MythicalCount = 0
+    local FruitList = {}
+    local RequestGetInventory = game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("getInventory")
+    
+    for i, v in pairs(RequestGetInventory) do 
+        if v['Type'] == "Blox Fruit" then 
+            for _, mythical in pairs(MythicalFruits) do
+                if v['Name'] == mythical then
+                    MythicalCount = MythicalCount + 1
+                end
+            end
+            for _, showFruit in pairs(ShowBoxFruits) do
+                if v['Name'] == showFruit then
+                    local shortName = string.split(showFruit, "-")[1]
+                    table.insert(FruitList, "[Box]" .. shortName)
+                end
+            end
+        end
+    end
+    
+    if MythicalCount > 0 then
+        if #FruitList > 0 then
+            return " | " .. table.concat(FruitList, ", ") .. " + " .. MythicalCount .. " Red Fruits"
+        else
+            return " | " .. MythicalCount .. " Red Fruits"
+        end
+    else
+        return ""
+    end
+end
+
 function CheckLogBeli()
     local BeliValue = game:GetService("Players").LocalPlayer.Data.Beli.Value
     BeliValue = AbbreviateNumber(BeliValue)
@@ -522,7 +596,7 @@ task.spawn(function()
                 fragment = CheckLogFragment(),
                 bounty = CheckLogBounty(),
                 lever = CheckPull_Lever_NopChillz(),
-                type = CheckLevelLog() .. GetMeleeType() .. CheckLogMirrorFractalNew() .. CheckLogVK() .. CheckLogCDKNew() .. CheckLogSA() .. CheckLogSGTNew() .. CheckLogLeviathanHeart(),
+                type = CheckLevelLog() .. GetMeleeType() .. CheckLogMirrorFractalNew() .. CheckLogVK() .. CheckLogCDKNew() .. CheckLogSA() .. CheckLogSGTNew() .. CheckLogLeviathanHeart() .. CheckLogFragmentTier() .. CheckLogMythicalFruits(),
                 name = _G.PC,
                 sword = SwordName,
                 gun = GunName,
