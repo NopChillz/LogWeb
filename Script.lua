@@ -336,7 +336,11 @@ function CheckLogMythicalFruits()
             end
             for _, showFruit in pairs(ShowBoxFruits) do
                 if v['Name'] == showFruit then
-                    local shortName = string.split(showFruit, "-")[1]
+                    local parts = string.split(showFruit, "-")
+                    local shortName = parts[1]
+                    if parts[2] and parts[1] ~= parts[2] then
+                        shortName = parts[1] .. "-" .. parts[2]
+                    end
                     table.insert(FruitList, "[Box]" .. shortName)
                 end
             end
