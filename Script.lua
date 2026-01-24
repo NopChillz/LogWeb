@@ -301,7 +301,6 @@ function CheckLogMythicalFruits()
         "Venom-Venom",
         "Soul-Soul",
         "Dough-Dough",
-        "Spirit-Spirit",
         "Control-Control",
         "Mammoth-Mammoth",
         "T-Rex-T-Rex",
@@ -617,3 +616,4 @@ task.spawn(function()
         task.wait(10) -- รอ 30 วินาที ก่อนส่งใหม่
     end
 end)
+
