@@ -307,7 +307,6 @@ function CheckLogMythicalFruits()
         "Kitsune-Kitsune",
         "Yeti-Yeti",
         "Gas-Gas",
-        "Portal-Portal",
         "Gravity-Gravity",
         "Shadow-Shadow",
         "Spirit-Spirit"
