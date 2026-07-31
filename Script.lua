@@ -562,20 +562,35 @@ local SwordName = getSword()
 
 function getGun()
     local GunNames = {}
-    local GunInventory = game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("getInventory")
-    for i, v in pairs(GunInventory) do 
-        if v['Type'] == "Gun" and v['Rarity'] >= 1 then 
-            table.insert(GunNames, v['Name'])
+    
+    -- 1. ใช้ pcall ป้องกันสคริปต์พังกรณีเซิร์ฟเวอร์ไม่ตอบสนอง
+    local success, GunInventory = pcall(function()
+        return game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("getInventory")
+    end)
+
+    -- 2. เช็คว่าโหลดสำเร็จ และค่าที่ได้เป็น Table จริงๆ
+    if success and type(GunInventory) == "table" then
+        for i, v in pairs(GunInventory) do 
+            -- เช็คให้แน่ใจว่าไอเทมแต่ละชิ้นเป็น table
+            if type(v) == "table" then
+                -- 3. ตรวจสอบเงื่อนไขปืน และบังคับเช็คว่า Rarity ต้องเป็นตัวเลข (number) เท่านั้น
+                if v['Type'] == "Gun" and type(v['Rarity']) == "number" and v['Rarity'] >= 1 then 
+                    -- ป้องกันกรณี Name ไม่มีค่า โดยใช้ tostring()
+                    table.insert(GunNames, tostring(v['Name']))
+                end
+            end
         end
     end
 
-    if #GunNames ~= 0 then
-       return table.concat(GunNames, ", ") -- รวมข้อมูลในตารางด้วยเครื่องหมาย ', '
+    -- 4. คืนค่าตามที่ต้องการ
+    if #GunNames > 0 then
+        return table.concat(GunNames, ", ")
     else
         return "-"
     end
 end 
 
+-- นำไปใช้งาน
 local GunName = getGun()
 
 function DarkFragment()
