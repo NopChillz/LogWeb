@@ -593,21 +593,6 @@ end
 -- นำไปใช้งาน
 local GunName = getGun()
 
-function DarkFragment()
-    local darkFragmentCount = 0
-    local inventory = game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("getInventory")
-
-    for i, v in pairs(inventory) do
-        if type(v) == "table" and v.Type == "Material" and v.Name == "Dark Fragment" then
-            darkFragmentCount = darkFragmentCount + 1
-        end
-    end
-
-    return darkFragmentCount
-end
-
-local DarkFragmentCount = DarkFragment()
-
 task.spawn(function()
     while true do
         local success, err = pcall(function()
@@ -630,7 +615,7 @@ task.spawn(function()
                 name = _G.PC,
                 sword = SwordName,
                 gun = GunName,
-                darkfragment = DarkFragmentCount,
+                darkfragment = game:GetService("Players").LocalPlayer.Data.Fragments.Value,
                 key_script = _G.Key,
             }
             sendDataToServer(dataToSend) -- ฟังก์ชันนี้อาจเป็นที่ที่เกิด error
