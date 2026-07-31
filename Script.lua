@@ -527,24 +527,37 @@ function CheckLevelLog()
 end
 
 function getSword()
-        local swordNames = {}
-        local RequestGetInventory = game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("getInventory")
+    local swordNames = {}
+    
+    -- 1. ใช้ pcall ป้องกันสคริปต์พังกรณีเซิร์ฟเวอร์ไม่ตอบสนอง
+    local success, RequestGetInventory = pcall(function()
+        return game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("getInventory")
+    end)
+
+    -- 2. เช็คว่าโหลดสำเร็จ และค่าที่ได้เป็น Table จริงๆ ถึงจะเริ่มวนลูป
+    if success and type(RequestGetInventory) == "table" then
         for i, v in pairs(RequestGetInventory) do 
-            if v['Type'] == "Sword" and v['Rarity'] >= 3 then 
-                local masteryValue = v['Mastery'] or "1" -- ใช้ค่า Mastery ถ้ามีค่าอยู่
-                local swordWithMastery = v['Name'] .. " (" .. tostring(masteryValue) .. ")"  -- รวมชื่อดาบกับค่า Mastery
-                table.insert(swordNames, swordWithMastery)
+            -- เช็คให้แน่ใจว่าไอเทมแต่ละชิ้นเป็น table ป้องกัน Error
+            if type(v) == "table" then
+                -- 3. ตรวจสอบเงื่อนไขดาบ และบังคับเช็คว่า Rarity ต้องเป็นตัวเลข (number) เท่านั้น
+                if v['Type'] == "Sword" and type(v['Rarity']) == "number" and v['Rarity'] >= 3 then 
+                    local masteryValue = v['Mastery'] or 1
+                    local swordWithMastery = tostring(v['Name']) .. " (" .. tostring(masteryValue) .. ")"  
+                    table.insert(swordNames, swordWithMastery)
+                end
             end
         end
-        
-        if #swordNames ~= 0 then
-            return table.concat(swordNames, ", ")
-        else
-            return "-"
-        end
+    end
+    
+    -- 4. คืนค่าตามที่ต้องการ
+    if #swordNames > 0 then
+        return table.concat(swordNames, ", ")
+    else
+        return "-"
+    end
+end 
 
-    end 
-
+-- นำไปใช้งาน
 local SwordName = getSword()
 
 function getGun()
