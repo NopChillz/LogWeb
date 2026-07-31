@@ -6,6 +6,12 @@ repeat task.wait() until (game.Players.LocalPlayer.Neutral == false) == true
 local requests = (syn and syn.request) or (krnl and request) or (fluxus and fluxus.request) or (electron and http.request) or request or http.request
 local HttpService = game:GetService("HttpService")
 local url = "https://bloxtracker.xyz/api/save-bf"
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local ItemReplicationService = require(ReplicatedStorage.ItemReplicationService)
+local ItemId = require(ReplicatedStorage.Economy.ItemId)
+local ItemConfig = require(ReplicatedStorage.ItemConfig)
+local Players = game:GetService("Players")
+local LocalPlayer = Players.LocalPlayer
 
 function GetLogAllMeleeNew()
     combat = 0
@@ -97,8 +103,58 @@ function getWorld()
 	return 0
 end
 
+local function getInventory()
+    local Items = {}
+
+    for _, v in ipairs(ItemReplicationService:GetItems()) do
+        local itemId = v.ItemId
+        local entry = Items[itemId]
+
+        if not entry then
+            local dataResult = ItemId.getDataFromId(itemId) -- was called twice before
+            if dataResult:isOk() then
+                local ItemData = dataResult:unwrap()
+				local ItemConfigData = ItemConfig.match(itemId):unwrap()
+                local Type
+				local Rarity 
+
+                if ItemData.Type == "Accessory" or ItemData.Type == "Material" or ItemData.Type == "Title" then
+                    Type = ItemData.Type
+                elseif ItemData.Type == "Moveset" then
+                    Type = ItemConfigData.Moveset.Type
+                elseif ItemData.Type == "PhysicalMoveset" then
+                    Type = ItemConfigData.Inventory.Brackets[1]
+                else
+                    Type = ItemData.Type
+                end
+
+				if ItemConfigData.Quality and ItemConfigData.Quality.RarityValue then 
+					Rarity = ItemConfigData.Quality.RarityValue
+				end
+
+
+
+                entry = {
+                    Type = Type,
+                    Name = ItemData.StorageKey,
+                    ItemId = itemId,
+                    NetworkedUID = v.NetworkedUID,
+					Rarity = Rarity
+                }
+                Items[itemId] = entry
+            end
+        end
+
+        if entry then
+            entry[v.Key] = v.Value
+        end
+    end
+
+    return Items
+end
+
 function getItem(itemName) 
-    for i,v in pairs(game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("getInventory")) do
+    for i,v in pairs(getInventory()) do
         if type(v) == "table" then
             if v.Type == "Material" then
                 if v.Name == itemName then
@@ -122,10 +178,6 @@ function getVK()
            return "✔️"
         end
     return "❌"
-end
-
-function getFruitName()
-    return string.split(game:GetService("Players").LocalPlayer.Data.DevilFruit.Value,"-")[2] or "None"
 end
 
 local function GetLogNewAwake()
@@ -221,10 +273,10 @@ end
 
 function GetLogFruitInventory()
     local FruitNames = {}
-    local RequestGetInventory = game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("getInventory")
+    local RequestGetInventory = getInventory()
 
     for i, v in pairs(RequestGetInventory) do 
-        if v['Type'] == "Blox Fruit" then 
+        if v['Type'] == "Fruits" then 
             table.insert(FruitNames, v['Name'])
         end
     end
@@ -282,7 +334,7 @@ end
 
 function CheckLogFragmentTier()
     local FragmentValue = game:GetService("Players").LocalPlayer.Data.Fragments.Value
-    
+
     if FragmentValue >= 70000 then
         return " | F:70K+"
     elseif FragmentValue >= 50000 then
@@ -311,7 +363,7 @@ function CheckLogMythicalFruits()
         "Shadow-Shadow",
         "Spirit-Spirit"
     }
-    
+
     local ShowBoxFruits = {
         "Dragon-Dragon",
         "Control-Control",
@@ -320,11 +372,11 @@ function CheckLogMythicalFruits()
         "Tiger-Tiger",
         "T-Rex-T-Rex"
     }
-    
+
     local MythicalCount = 0
     local FruitList = {}
-    local RequestGetInventory = game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("getInventory")
-    
+    local RequestGetInventory = getInventory()
+
     for i, v in pairs(RequestGetInventory) do 
         if v['Type'] == "Blox Fruit" then 
             for _, mythical in pairs(MythicalFruits) do
@@ -344,7 +396,7 @@ function CheckLogMythicalFruits()
             end
         end
     end
-    
+
     if MythicalCount > 0 then
         if #FruitList > 0 then
             return " | " .. table.concat(FruitList, ", ") .. " + " .. MythicalCount .. " Red Fruits"
@@ -408,7 +460,7 @@ end
 function CheckLogMirrorFractalNew()
     if getgenv().SettingsLog.Show_Material_SettingsLog["Log_Mirror_Fractal"] == true then
         MirrorFac_Text = ''
-        for i,v in pairs(game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("getInventory")) do
+        for i,v in pairs(getInventory()) do
             if type(v) == "table" then
                 if v.Type == "Material" then
                     if v.Name == "Mirror Fractal" then
@@ -527,71 +579,43 @@ function CheckLevelLog()
 end
 
 function getSword()
-    local swordNames = {}
-    
-    -- 1. ใช้ pcall ป้องกันสคริปต์พังกรณีเซิร์ฟเวอร์ไม่ตอบสนอง
-    local success, RequestGetInventory = pcall(function()
-        return game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("getInventory")
-    end)
-
-    -- 2. เช็คว่าโหลดสำเร็จ และค่าที่ได้เป็น Table จริงๆ ถึงจะเริ่มวนลูป
-    if success and type(RequestGetInventory) == "table" then
-        for i, v in pairs(RequestGetInventory) do 
-            -- เช็คให้แน่ใจว่าไอเทมแต่ละชิ้นเป็น table ป้องกัน Error
-            if type(v) == "table" then
-                -- 3. ตรวจสอบเงื่อนไขดาบ และบังคับเช็คว่า Rarity ต้องเป็นตัวเลข (number) เท่านั้น
-                if v['Type'] == "Sword" and type(v['Rarity']) == "number" and v['Rarity'] >= 3 then 
-                    local masteryValue = v['Mastery'] or 1
-                    local swordWithMastery = tostring(v['Name']) .. " (" .. tostring(masteryValue) .. ")"  
-                    table.insert(swordNames, swordWithMastery)
-                end
+    local SwordList, RequestGetInvertory = {}, nil
+    RequestGetInvertory = getInventory()
+    for _, v in pairs(RequestGetInvertory) do 
+        if v['Type'] == "Sword" then 
+            if v['Rarity'] >= 3 then
+                table.insert(SwordList, v['Name'].." ["..v.Mastery.."]")
             end
         end
     end
-    
-    -- 4. คืนค่าตามที่ต้องการ
-    if #swordNames > 0 then
-        return table.concat(swordNames, ", ")
-    else
-        return "-"
-    end
-end 
-
--- นำไปใช้งาน
-local SwordName = getSword()
+    return SwordList
+end
 
 function getGun()
-    local GunNames = {}
-    
-    -- 1. ใช้ pcall ป้องกันสคริปต์พังกรณีเซิร์ฟเวอร์ไม่ตอบสนอง
-    local success, GunInventory = pcall(function()
-        return game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("getInventory")
-    end)
-
-    -- 2. เช็คว่าโหลดสำเร็จ และค่าที่ได้เป็น Table จริงๆ
-    if success and type(GunInventory) == "table" then
-        for i, v in pairs(GunInventory) do 
-            -- เช็คให้แน่ใจว่าไอเทมแต่ละชิ้นเป็น table
-            if type(v) == "table" then
-                -- 3. ตรวจสอบเงื่อนไขปืน และบังคับเช็คว่า Rarity ต้องเป็นตัวเลข (number) เท่านั้น
-                if v['Type'] == "Gun" and type(v['Rarity']) == "number" and v['Rarity'] >= 1 then 
-                    -- ป้องกันกรณี Name ไม่มีค่า โดยใช้ tostring()
-                    table.insert(GunNames, tostring(v['Name']))
-                end
+    local SwordList, RequestGetInvertory = {}, nil
+    RequestGetInvertory = getInventory()
+    for _, v in pairs(RequestGetInvertory) do 
+        if v['Type'] == "Gun" then 
+            if v['Rarity'] >= 3 then
+                table.insert(SwordList, v['Name'].." ["..v.Mastery.."]")
             end
         end
     end
+    return SwordList
+end
 
-    -- 4. คืนค่าตามที่ต้องการ
-    if #GunNames > 0 then
-        return table.concat(GunNames, ", ")
-    else
-        return "-"
+function DarkFragment()
+    local darkFragmentCount = 0
+    local inventory = getInventory()
+
+    for i, v in pairs(inventory) do
+        if type(v) == "table" and v.Type == "Material" and v.Name == "Dark Fragment" then
+            darkFragmentCount = darkFragmentCount + 1
+        end
     end
-end 
 
--- นำไปใช้งาน
-local GunName = getGun()
+    return darkFragmentCount
+end
 
 task.spawn(function()
     while true do
@@ -613,9 +637,9 @@ task.spawn(function()
                 lever = CheckPull_Lever_NopChillz(),
                 type = CheckLevelLog() .. GetMeleeType() .. CheckLogMirrorFractalNew() .. CheckLogVK() .. CheckLogCDKNew() .. CheckLogSA() .. CheckLogSGTNew() .. CheckLogLeviathanHeart() .. CheckLogFragmentTier() .. CheckLogMythicalFruits(),
                 name = _G.PC,
-                sword = SwordName,
-                gun = GunName,
-                darkfragment = game:GetService("Players").LocalPlayer.Data.Fragments.Value,
+                sword = getSword(),
+                gun = getGun(),
+                darkfragment = DarkFragment(),
                 key_script = _G.Key,
             }
             sendDataToServer(dataToSend) -- ฟังก์ชันนี้อาจเป็นที่ที่เกิด error
@@ -628,4 +652,3 @@ task.spawn(function()
         task.wait(10) -- รอ 30 วินาที ก่อนส่งใหม่
     end
 end)
-
